@@ -26,7 +26,7 @@ from typing import Optional, Union
 
 import numpy as np
 import wfdb
-from edflib import highlevel
+import pyedflib.highlevel as highlevel
 
 
 def convert_single_file(
@@ -175,36 +175,43 @@ def convert_single_file(
         output_path = output_path + '.edf'
     
     # Создание списка сигналов для EDF
-    signals_list = []
+    signals_data = []
+    signal_headers = []
     for i in range(n_signals):
-        signal_data = {
+        signal_header = {
             'label': signal_names[i],
             'dimension': units[i],
-            'sample_rate': int(fs),
+            'sample_frequency': int(fs),
             'physical_min': physical_min[i],
             'physical_max': physical_max[i],
             'digital_min': digital_min[i],
             'digital_max': digital_max[i],
             'prefilter': '',
-            'data': signals[:, i]
         }
-        signals_list.append(signal_data)
+        signal_headers.append(signal_header)
+        signals_data.append(signals[:, i])
+    
+    # Подготовка заголовка EDF
+    edf_header = {
+        'patientcode': patientcode,
+        'sex': sex,
+        'birthdate': birthdate if isinstance(birthdate, datetime) else datetime(1900, 1, 1),
+        'patient_additional': patient_additional,
+        'startdate': startdate if isinstance(startdate, datetime) else datetime.now(),
+        'starttime': starttime,
+        'technician': technician,
+        'equipment': equipment,
+        'admincode': admincode,
+        'recordingid': recordingid,
+        'recording_additional': recording_additional,
+    }
     
     # Запись EDF файла
     highlevel.write_edf(
         output_path,
-        signals=signals_list,
-        patientcode=patientcode,
-        sex=sex,
-        birthdate=birthdate,
-        patient_additional=patient_additional,
-        startdate=startdate,
-        starttime=starttime,
-        technician=technician,
-        equipment=equipment,
-        admincode=admincode,
-        recordingid=recordingid,
-        recording_additional=recording_additional,
+        signals=signals_data,
+        signal_headers=signal_headers,
+        header=edf_header,
     )
     
     print(f"Конвертация завершена: {output_path}")

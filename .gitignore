@@ -1,1 +1,11 @@
-Nothing should be ignored based on the provided file changes. The only added file is 'wfdb_to_edf.py', which appears to be a Python source file and should not be ignored.
+```
+# Compiled and build artifacts
+*.atr
+*.dat
+*.hea
+*.xws
+*.edf
+
+# Output directories
+output_edf/
+```
