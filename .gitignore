@@ -1,11 +1,1 @@
-```
-# Compiled and build artifacts
-*.atr
-*.dat
-*.hea
-*.xws
-*.edf
-
-# Output directories
-output_edf/
-```
+Nothing should be ignored since only a Python source file (.py) was added and no build artifacts, dependencies, or temporary files are present in the changes.
